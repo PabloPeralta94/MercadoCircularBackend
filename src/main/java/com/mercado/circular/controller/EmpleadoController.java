@@ -23,6 +23,7 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
+
     @GetMapping // getAllEmpleados (1)
     public ResponseEntity<List<Empleado>> getAllEmpleados() {
         List<Empleado> empleados = empleadoService.findAllEmpleados();
@@ -42,7 +43,7 @@ public class EmpleadoController {
         return new ResponseEntity(newEmpleado, HttpStatus.CREATED);
     }
 
-    // probar con postman si este método funciona, como actualiza un empleado
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update") // (4)
     public ResponseEntity<Empleado> updateEmpleado(@RequestBody Empleado empleado) {
         Empleado updatedEmpleado = empleadoService.updateEmpleado(empleado);

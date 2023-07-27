@@ -28,7 +28,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nombre, String nombreUsuario, String email, String password) {
+    public Usuario(@NotNull String nombre, @NotNull String nombreUsuario, @NotNull String email, @NotNull String password) {
         this.nombre = nombre;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
@@ -83,4 +83,3 @@ public class Usuario {
         this.roles = roles;
     }
 }
-
