@@ -1,5 +1,6 @@
 package com.mercado.circular.security.entity;
 
+import com.mercado.circular.model.Post;
 import com.sun.istack.NotNull;
 import javax.persistence.*;
 import java.util.HashSet;
@@ -10,20 +11,29 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @NotNull
     private String nombre;
+
     @NotNull
     @Column(unique = true)
     private String nombreUsuario;
+
     @NotNull
     private String email;
+
     @NotNull
     private String password;
+
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<Rol> roles = new HashSet<>();
+
+    // Adding the @OneToMany relationship with posts
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Post> posts = new HashSet<>();
 
     public Usuario() {
     }
@@ -81,5 +91,13 @@ public class Usuario {
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }

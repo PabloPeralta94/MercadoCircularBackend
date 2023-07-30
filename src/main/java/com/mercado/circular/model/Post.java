@@ -1,5 +1,8 @@
 package com.mercado.circular.model;
+import com.mercado.circular.security.entity.Usuario;
+import javax.persistence.*;
 
+@Entity
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -7,28 +10,41 @@ public class Post {
 
     private String title;
     @Lob
-    private String text; // Text of the posting (can be very large)
+    private String text;
 
-    private String imgUrl; // Link to an image (optional)
-    private String videoUrl; // Link to a video (optional)
+    private String imgUrl;
+    private String videoUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_nombre_usuario", referencedColumnName = "nombreUsuario")
-    private Usuario user; // User associated with the posting
+    private Usuario user;
 
-    // Default constructor
-    public SocialWebPosting() {
+
+    public Post() {
     }
 
-    // Constructor without optional image and video fields
-    public SocialWebPosting(String title, String text, Usuario user) {
+
+    public Post(String title, String text, Usuario user) {
         this.title = title;
         this.text = text;
         this.user = user;
     }
 
-    // Constructor with optional image and video fields
-    public SocialWebPosting(String title, String text, String imgUrl, String videoUrl, Usuario user) {
+    public Post(String title, String text, String imgUrl, Usuario user) {
+        this.title = title;
+        this.text = text;
+        this.imgUrl = imgUrl;
+        this.user = user;
+    }
+
+    public Post(String title, String text,Usuario user, String videoUrl) {
+        this.title = title;
+        this.text = text;
+        this.videoUrl = videoUrl;
+        this.user = user;
+    }
+
+    public Post(String title, String text, String imgUrl, String videoUrl, Usuario user) {
         this.title = title;
         this.text = text;
         this.imgUrl = imgUrl;
@@ -36,13 +52,14 @@ public class Post {
         this.user = user;
     }
 
-    // Getters and setters
+
+
     public Long getId() {
-        return id;
+        return postId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.postId = id;
     }
 
     public String getTitle() {
