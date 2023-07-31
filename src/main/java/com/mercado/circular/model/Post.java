@@ -15,7 +15,7 @@ public class Post {
     private String imgUrl;
     private String videoUrl;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_nombre_usuario", referencedColumnName = "nombreUsuario")
     private Usuario user;
 

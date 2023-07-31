@@ -13,7 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findById(Long postId);
     Long countByUser_NombreUsuario(String user);
 
-    Post findByUser_NombreUsuario(String user);
+    Optional<Post> findByUser_NombreUsuario(String user);
 
     Post findByUser_NombreUsuarioAndTitle(String user, String title);
 

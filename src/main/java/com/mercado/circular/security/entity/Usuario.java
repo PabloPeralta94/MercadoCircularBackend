@@ -1,13 +1,15 @@
 package com.mercado.circular.security.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mercado.circular.model.Post;
 import com.sun.istack.NotNull;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Usuario {
+public class Usuario  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -33,7 +35,9 @@ public class Usuario {
 
     // Adding the @OneToMany relationship with posts
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Post> posts = new HashSet<>();
+
 
     public Usuario() {
     }
