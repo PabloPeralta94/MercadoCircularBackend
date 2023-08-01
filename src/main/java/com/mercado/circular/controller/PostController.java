@@ -2,6 +2,7 @@ package com.mercado.circular.controller;
 
 import com.mercado.circular.model.Post;
 import com.mercado.circular.security.entity.Usuario;
+import com.mercado.circular.security.jwt.JwtProvider;
 import com.mercado.circular.security.service.UsuarioService;
 import com.mercado.circular.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +26,13 @@ public class PostController {
     private final PostService postService;
     private final UsuarioService usuarioService;
 
+    private final JwtProvider jwtProvider;
+
     @Autowired
-    public PostController(PostService postService, UsuarioService usuarioService) {
+    public PostController(PostService postService, UsuarioService usuarioService, JwtProvider jwtProvider) {
         this.postService = postService;
         this.usuarioService = usuarioService;
+        this.jwtProvider = jwtProvider;
     }
 
     @GetMapping
@@ -95,8 +101,11 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @PostMapping("/byUser")
-    public ResponseEntity<Post> createPostForUsuario(@RequestParam String nombreUsuario,
-                                                     @Valid @RequestBody Post post) {
+    public ResponseEntity<Post> createPostForUsuario(@Valid @RequestBody Post post,
+                                                     Authentication authentication) {
+        // Get the authenticated user's nombreUsuario
+        String nombreUsuario = authentication.getName();
+
         Optional<Usuario> existingUsuario = usuarioService.getByNombreUsuario(nombreUsuario);
         if (existingUsuario.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -106,5 +115,7 @@ public class PostController {
         Post createdPost = postService.createPost(post);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
+
+
 
 }
