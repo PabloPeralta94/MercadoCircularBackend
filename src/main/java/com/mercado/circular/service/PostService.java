@@ -1,4 +1,5 @@
 package com.mercado.circular.service;
+import com.mercado.circular.MDto.PostDTO;
 import com.mercado.circular.model.Post;
 import com.mercado.circular.repository.PostRepository;
 import com.mercado.circular.security.entity.Usuario;
@@ -24,15 +25,16 @@ public class PostService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostDTO> getAllPosts() {
+        return postRepository.getAllPosts();
     }
 
     public Optional<Post> getPostById(Long postId) {
         return postRepository.findById(postId);
     }
 
-    public Post createPost(Post post) {
+    public Post createPost(Post post, Usuario usuario) {
+        post.setUser(usuario);
         return postRepository.save(post);
     }
 
