@@ -89,8 +89,8 @@ public class PostController {
     }
 
     @GetMapping("/byUser")
-    public ResponseEntity<List<Post>> getPostsByUser(@RequestParam String user) {
-        List<Post> posts = postService.getPostsByUser(user);
+    public ResponseEntity<List<PostDTO>> getPostsByUser(@RequestParam("nombreUsuario") String nombreUsuario) {
+        List<PostDTO> posts = postService.getPostsByNombreUsuario(nombreUsuario);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 

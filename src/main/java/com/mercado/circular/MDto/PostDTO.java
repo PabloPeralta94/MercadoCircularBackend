@@ -4,6 +4,7 @@ public class PostDTO {
     private Long postId;
     private String title;
     private String text;
+    private String nombreUsuario; // New property for nombreUsuario
 
     public Long getPostId() {
         return postId;
@@ -29,10 +30,19 @@ public class PostDTO {
         this.text = text;
     }
 
-    public PostDTO(Long postId, String title, String text) {
+    public String getNombreUsuario() { // Getter for nombreUsuario
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) { // Setter for nombreUsuario
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public PostDTO(Long postId, String title, String text, String nombreUsuario) { // Constructor with nombreUsuario
         this.postId = postId;
         this.title = title;
         this.text = text;
+        this.nombreUsuario = nombreUsuario;
     }
 
     public PostDTO() {
@@ -41,4 +51,5 @@ public class PostDTO {
     private String imgUrl;
     private String videoUrl;
 
+    // Getters and setters for imgUrl and videoUrl (if needed)
 }

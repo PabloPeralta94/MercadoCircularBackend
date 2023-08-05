@@ -29,6 +29,10 @@ public class PostService {
         return postRepository.getAllPosts();
     }
 
+    public List<PostDTO> getPostsByNombreUsuario(String nombreUsuario) {
+        return postRepository.getPostsByNombreUsuario(nombreUsuario);
+    }
+
     public Optional<Post> getPostById(Long postId) {
         return postRepository.findById(postId);
     }
