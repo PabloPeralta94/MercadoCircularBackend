@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Usuario  implements Serializable {
+public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -33,11 +33,27 @@ public class Usuario  implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<Rol> roles = new HashSet<>();
 
-    // Adding the @OneToMany relationship with posts
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    @JsonIgnore
+    private Set<Usuario> friends = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_pending_friend_requests",
+            joinColumns = @JoinColumn(name = "receiver_id"),
+            inverseJoinColumns = @JoinColumn(name = "sender_id")
+    )
+    private Set<Usuario> pendingFriendRequests = new HashSet<>();
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
-
 
     public Usuario() {
     }
@@ -97,11 +113,37 @@ public class Usuario  implements Serializable {
         this.roles = roles;
     }
 
+    public Set<Usuario> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<Usuario> friends) {
+        this.friends = friends;
+    }
+
     public Set<Post> getPosts() {
         return posts;
     }
 
     public void setPosts(Set<Post> posts) {
         this.posts = posts;
+    }
+
+    public Set<Usuario> getPendingFriendRequests() {
+        return pendingFriendRequests;
+    }
+
+    public void setPendingFriendRequests(Set<Usuario> pendingFriendRequests) {
+        this.pendingFriendRequests = pendingFriendRequests;
+    }
+
+    public void addFriend(Usuario friend) {
+        friends.add(friend);
+        friend.getFriends().add(this);
+    }
+
+    public void removeFriend(Usuario friend) {
+        friends.remove(friend);
+        friend.getFriends().remove(this);
     }
 }

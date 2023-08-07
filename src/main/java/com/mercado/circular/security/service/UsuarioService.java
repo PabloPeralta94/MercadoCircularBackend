@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -30,6 +31,14 @@ public class UsuarioService {
 
     public void save(Usuario usuario){
         usuarioRepository.save(usuario);
+    }
+
+    public Optional<Usuario> getById(int id) {
+        return usuarioRepository.findById(id);
+    }
+
+    public Set<Usuario> getReceivedFriendRequests(Usuario receiver) {
+        return usuarioRepository.findByPendingFriendRequestsContains(receiver);
     }
 }
 
