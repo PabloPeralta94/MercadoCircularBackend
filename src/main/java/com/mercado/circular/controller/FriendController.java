@@ -31,11 +31,11 @@ public class FriendController {
         this.jwtProvider = jwtProvider;
     }
 
-    @PostMapping("/send-request/{friendId}")
-    public ResponseEntity<String> sendFriendRequest(@PathVariable int friendId, Authentication authentication) {
-        String nombreUsuario = authentication.getName();
-        Optional<Usuario> senderOptional = usuarioService.getByNombreUsuario(nombreUsuario);
-        Optional<Usuario> receiverOptional = usuarioService.getById(friendId);
+    @PostMapping("/send-request/{receiverId}")
+    public ResponseEntity<String> sendFriendRequest(@PathVariable int receiverId, Authentication authentication) {
+        String senderNombreUsuario = authentication.getName();
+        Optional<Usuario> senderOptional = usuarioService.getByNombreUsuario(senderNombreUsuario);
+        Optional<Usuario> receiverOptional = usuarioService.getById(receiverId);
 
         if (senderOptional.isEmpty() || receiverOptional.isEmpty()) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
@@ -48,16 +48,12 @@ public class FriendController {
             return new ResponseEntity<>("You cannot send a friend request to yourself", HttpStatus.BAD_REQUEST);
         }
 
-        if (sender.getFriends().contains(receiver)) {
-            return new ResponseEntity<>("You are already friends", HttpStatus.BAD_REQUEST);
-        }
-
-        if (sender.getPendingFriendRequests().contains(receiver) || receiver.getPendingFriendRequests().contains(sender)) {
+        if (receiver.getFriends().contains(sender) || sender.getPendingFriendRequests().contains(receiver)) {
             return new ResponseEntity<>("Friend request already sent", HttpStatus.BAD_REQUEST);
         }
 
-        sender.getPendingFriendRequests().add(receiver);
-        usuarioService.save(sender);
+        receiver.getPendingFriendRequests().add(sender);
+        usuarioService.save(receiver);
 
         return new ResponseEntity<>("Friend request sent successfully", HttpStatus.OK);
     }
@@ -84,23 +80,9 @@ public class FriendController {
 
         usuarioService.save(receiver);
 
-        return new ResponseEntity<>("Friend request accepted successfully", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/pending-requests")
-    public ResponseEntity<Set<Usuario>> getPendingFriendRequests(Authentication authentication) {
-        String nombreUsuario = authentication.getName();
-        Optional<Usuario> receiverOptional = usuarioService.getByNombreUsuario(nombreUsuario);
-
-        if (receiverOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Usuario receiver = receiverOptional.get();
-        Set<Usuario> pendingRequests = receiver.getPendingFriendRequests();
-
-        return new ResponseEntity<>(pendingRequests, HttpStatus.OK);
-    }
 
     @GetMapping("/received-requests")
     public ResponseEntity<List<FriendRequestDTO>> getReceivedFriendRequests(Authentication authentication) {
@@ -112,7 +94,7 @@ public class FriendController {
         }
 
         Usuario receiver = receiverOptional.get();
-        Set<Usuario> receivedRequests = usuarioService.getReceivedFriendRequests(receiver);
+        Set<Usuario> receivedRequests = receiver.getPendingFriendRequests();
 
         // Convert the Usuario objects to FriendRequestDTO objects
         List<FriendRequestDTO> friendRequestsDTO = receivedRequests.stream()
@@ -121,6 +103,8 @@ public class FriendController {
 
         return new ResponseEntity<>(friendRequestsDTO, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/amigos")
     public ResponseEntity<List<FriendDTO>> getMyFriends(Authentication authentication) {
@@ -142,7 +126,7 @@ public class FriendController {
         return new ResponseEntity<>(friendsDTO, HttpStatus.OK);
     }
 
-
+    // Additional methods can be added here
 
 }
 
