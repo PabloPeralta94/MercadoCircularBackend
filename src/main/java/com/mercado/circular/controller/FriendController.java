@@ -31,11 +31,11 @@ public class FriendController {
         this.jwtProvider = jwtProvider;
     }
 
-    @PostMapping("/send-request/{receiverId}")
-    public ResponseEntity<String> sendFriendRequest(@PathVariable int receiverId, Authentication authentication) {
+    @PostMapping("/send-request/{nombreUsuario}")
+    public ResponseEntity<String> sendFriendRequestByNombreUsuario(@PathVariable String nombreUsuario, Authentication authentication) {
         String senderNombreUsuario = authentication.getName();
         Optional<Usuario> senderOptional = usuarioService.getByNombreUsuario(senderNombreUsuario);
-        Optional<Usuario> receiverOptional = usuarioService.getById(receiverId);
+        Optional<Usuario> receiverOptional = usuarioService.getByNombreUsuario(nombreUsuario);
 
         if (senderOptional.isEmpty() || receiverOptional.isEmpty()) {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
@@ -57,6 +57,7 @@ public class FriendController {
 
         return new ResponseEntity<>("Friend request sent successfully", HttpStatus.OK);
     }
+
 
     @PostMapping("/accept-request/{senderId}")
     public ResponseEntity<String> acceptFriendRequest(@PathVariable int senderId, Authentication authentication) {
