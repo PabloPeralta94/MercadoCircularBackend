@@ -1,6 +1,7 @@
 package com.mercado.circular.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mercado.circular.model.Peces;
 import com.mercado.circular.model.Post;
 import com.sun.istack.NotNull;
 import javax.persistence.*;
@@ -54,6 +55,10 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Peces> peces = new HashSet<>();
 
     public Usuario() {
     }
