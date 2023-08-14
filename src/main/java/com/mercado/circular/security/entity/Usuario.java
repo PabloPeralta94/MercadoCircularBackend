@@ -1,6 +1,7 @@
 package com.mercado.circular.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mercado.circular.model.FishingGear;
 import com.mercado.circular.model.Peces;
 import com.mercado.circular.model.Post;
 import com.sun.istack.NotNull;
@@ -55,6 +56,10 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<FishingGear> fishingGear = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnore
@@ -150,5 +155,13 @@ public class Usuario implements Serializable {
     public void removeFriend(Usuario friend) {
         friends.remove(friend);
         friend.getFriends().remove(this);
+    }
+
+    public Set<FishingGear> getFishingGear() {
+        return fishingGear;
+    }
+
+    public void setFishingGear(Set<FishingGear> fishingGear) {
+        this.fishingGear = fishingGear;
     }
 }
