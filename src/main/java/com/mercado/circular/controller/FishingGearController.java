@@ -1,6 +1,6 @@
 package com.mercado.circular.controller;
-
 import com.mercado.circular.model.FishingGear;
+import com.mercado.circular.model.Purchase;
 import com.mercado.circular.security.entity.Usuario;
 import com.mercado.circular.security.jwt.JwtProvider;
 import com.mercado.circular.security.service.UsuarioService;
@@ -10,12 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
 
 @RestController
 @Transactional
@@ -48,8 +46,8 @@ public class FishingGearController {
 
     @PostMapping("/byUser")
     public ResponseEntity<FishingGear> createFishingGearForUsuario(@Valid @RequestBody FishingGear gear,
-                                                                   Authentication authentication) {
-        // Get the authenticated user's nombreUsuario
+                                                                  Authentication authentication) {
+
         String nombreUsuario = authentication.getName();
 
         Optional<Usuario> existingUsuario = usuarioService.getByNombreUsuario(nombreUsuario);
@@ -85,6 +83,21 @@ public class FishingGearController {
         return new ResponseEntity<>("Fishing gear deleted successfully", HttpStatus.NO_CONTENT);
     }
 
-    // Other methods...
+    @PostMapping("/buy/{gearId}")
+    public ResponseEntity<String> buyFishingGear(@PathVariable Long gearId, @RequestBody Purchase purchase, Authentication authentication) {
+        String nombreUsuario = authentication.getName();
+
+        Optional<Usuario> existingUsuario = usuarioService.getByNombreUsuario(nombreUsuario);
+        Optional<FishingGear> existingGear = Optional.ofNullable(fishingGearService.getFishingGearById(gearId));
+
+        if (existingUsuario.isEmpty() || existingGear.isEmpty()) {
+            return new ResponseEntity<>("User or gear not found", HttpStatus.NOT_FOUND);
+        }
+
+        // aca iria la logica de la compra
+
+        return new ResponseEntity<>("Purchase successful", HttpStatus.OK);
+    }
+
 
 }
